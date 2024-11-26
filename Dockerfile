@@ -1,19 +1,19 @@
-# Base da imagem com PHP e Apache
-FROM php:8.1-apache
+# Usa a imagem oficial do PHP com Apache
+FROM php:8.2-apache
 
-# Copiar o código da aplicação para o diretório padrão do Apache
-COPY . /var/www/html/
+# Define o diretório de trabalho no container
+WORKDIR /var/www/html
 
-# Ajustar permissões dos arquivos
-RUN chown -R www-data:www-data /var/www/html
+# Copia os arquivos do site para o diretório de trabalho
+COPY . /var/www/html
 
-# Instalar extensões PHP necessárias
-RUN docker-php-ext-install mysqli
+# Concede permissões ao diretório
+RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
-# Configurar o ServerName para evitar warnings
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+# Instala extensões PHP adicionais, se necessário (exemplo: mysqli)
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Expor a porta 80 para o tráfego web
+# Expondo a porta 80
 EXPOSE 80
 
 # Comando para iniciar o Apache
